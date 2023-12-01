@@ -12,13 +12,18 @@
       </div>
     </div>
     <div class="news">
-      <ul></ul>
+      <ul>
+        <NewsItem />
+        <NewsItem />
+        <NewsItem />
+      </ul>
     </div>
   </main>
 </template>
 
 <script>
 import { DOMParser } from "xmldom";
+import NewsItem from "../components/NewsItem.vue";
 
 async function fetchNewsData(url) {
   try {
@@ -59,6 +64,7 @@ export default {
     const allNews = [...mosNews, ...lentaNews];
     return { mosNews, lentaNews, allNews };
   },
+  components: { NewsItem },
 };
 </script>
 <style scoped>
@@ -85,5 +91,14 @@ main {
 .filters__right img {
   cursor: pointer;
   margin: 0 5px;
+}
+.news {
+  margin-top: 15px;
+}
+.news ul {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
 }
 </style>
