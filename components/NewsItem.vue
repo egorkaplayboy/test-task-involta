@@ -1,22 +1,32 @@
 <template>
   <li class="new">
     <h3>
-      Первые земельные участки реализованы на специальных торгах для малого и
-      среднего бизнеса
+      {{ news.title }}
     </h3>
     <p>
-      На каждый участок претендовали в среднем шесть участников. Стоимость одной
-      из сделок выросла в ходе аукциона в 26 раз.
+      {{ news.description }}
     </p>
-    <a href="#">Подробнее</a>
+    <a :href="news.link">Подробнее</a>
     <div class="new__info">
       <span>www.mos.ru</span>
-      <span>12.01.2020</span>
+      <span>{{ formattedDate(news.pubDate) }}</span>
     </div>
   </li>
 </template>
 <script>
-export default {};
+import { mapGetters } from "vuex";
+
+export default {
+  props: {
+    news: {
+      type: Object,
+      required: true,
+    },
+  },
+  computed: {
+    ...mapGetters(["formattedDate"]),
+  },
+};
 </script>
 <style scoped>
 .new {
