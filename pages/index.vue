@@ -22,38 +22,55 @@
     </div>
     <div class="news">
       <ul>
-        <NewsItem v-for="item in news" :key="item.id" :news="item" />
+        <NewsItem v-for="item in filteredNews" :key="item.id" :news="item" />
       </ul>
+    </div>
+    <div class="paginate">
+      <p
+        v-for="page in displayPages"
+        :key="page"
+        @click="goToPage(page)"
+        :class="{ active: currentPage === page }"
+      >
+        {{ page }}
+      </p>
     </div>
   </main>
 </template>
 
 <script>
 import NewsItem from "../components/NewsItem.vue";
-import { mapState, mapActions } from "vuex";
+import { mapState, mapActions, mapGetters } from "vuex";
 
 export default {
   name: "IndexPage",
   components: { NewsItem },
   computed: {
-    ...mapState(["news", "selectedFilter"]),
+    ...mapState(["news", "selectedFilter", "currentPage"]),
+    ...mapGetters(["totalPages", "filteredNews", "displayPages"]),
   },
   methods: {
     ...mapActions(["fetchMosNews", "fetchLentaNews", "fetchAllNews"]),
     async showAllNews() {
+      this.goToPage(1);
       this.$store.commit("setSelectedFilter", "all");
       this.$router.push({ query: { source: "all" } });
       await this.fetchAllNews();
     },
     async showLentaNews() {
+      this.goToPage(1);
       this.$store.commit("setSelectedFilter", "lenta");
       this.$router.push({ query: { source: "lenta" } });
       await this.fetchLentaNews();
     },
     async showMosNews() {
+      this.goToPage(1);
       this.$store.commit("setSelectedFilter", "mos");
       this.$router.push({ query: { source: "mos" } });
       await this.fetchMosNews();
+    },
+    goToPage(page) {
+      this.$store.commit("setCurrentPage", page);
     },
   },
   async asyncData({ store }) {
@@ -97,5 +114,20 @@ main {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
+}
+.paginate {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.paginate p {
+  font-weight: 700;
+  font-size: 18px;
+  color: #000000;
+  cursor: pointer;
+  margin: 0 10px;
+}
+.paginate p.active {
+  color: #0029ff;
 }
 </style>

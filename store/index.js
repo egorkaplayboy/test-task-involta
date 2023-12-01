@@ -2,20 +2,56 @@ import { DOMParser } from "xmldom";
 
 export const state = () => ({
   news: [],
-  selectedFilter: "all"
+  selectedFilter: "all",
+  currentPage: 1,
+  pageSize: 4,
 });
 export const mutations = {
   setNews(state, news) {
     state.news = news;
   },
   setSelectedFilter(state, filter) {
-    state.selectedFilter = filter
-  }
+    state.selectedFilter = filter;
+  },
+  setCurrentPage(state, page) {
+    state.currentPage = page;
+  },
 };
 export const getters = {
   formattedDate: (state) => (date) => {
     const options = { day: "2-digit", month: "2-digit", year: "numeric" };
     return new Date(date).toLocaleDateString("ru-RU", options);
+  },
+  totalPages: (state) => {
+    const { news, pageSize } = state;
+    return Math.ceil(news.length / pageSize);
+  },
+  filteredNews: (state) => {
+    const { currentPage, pageSize, news } = state;
+    const startIndex = (currentPage - 1) * pageSize;
+    const endIndex = startIndex + pageSize;
+    return news.slice(startIndex, endIndex);
+  },
+  displayPages: (state, getters) => {
+    const totalPages = getters.totalPages;
+    const currentPage = state.currentPage;
+    const displayRange = 2;
+    const firstPage = 1;
+    const lastPage = totalPages;
+    let pages = [];
+    pages.push(firstPage);
+    for (
+      let i = currentPage - displayRange;
+      i <= currentPage + displayRange;
+      i++
+    ) {
+      if (i > firstPage && i < lastPage) {
+        pages.push(i);
+      }
+    }
+    pages.push(lastPage);
+
+    return pages;
   },
 };
 export const actions = {
@@ -60,7 +96,7 @@ async function fetchNewsData(url) {
         description: description ? description.textContent : "",
         pubDate: pubDate ? pubDate.textContent : "",
         imgUrl: enclosure ? enclosure.getAttribute("url") : "",
-        source: channelLink
+        source: channelLink,
       };
     });
     return parsedItems;
