@@ -52,25 +52,30 @@ export default {
   methods: {
     ...mapActions(["fetchMosNews", "fetchLentaNews", "fetchAllNews"]),
     async showAllNews() {
-      this.goToPage(1);
+      const { query } = this.$route;
       this.$store.commit("setSelectedFilter", "all");
-      this.$router.push({ query: { source: "all" } });
+      this.$router.push({ query: { ...query, source: "all" } });
       await this.fetchAllNews();
+      this.goToPage(1);
     },
     async showLentaNews() {
-      this.goToPage(1);
+      const { query } = this.$route;
       this.$store.commit("setSelectedFilter", "lenta");
-      this.$router.push({ query: { source: "lenta" } });
+      this.$router.push({ query: { ...query, source: "lenta" } });
       await this.fetchLentaNews();
+      this.goToPage(1);
     },
     async showMosNews() {
-      this.goToPage(1);
+      const { query } = this.$route;
       this.$store.commit("setSelectedFilter", "mos");
-      this.$router.push({ query: { source: "mos" } });
+      this.$router.push({ query: { ...query, source: "mos" } });
       await this.fetchMosNews();
+      this.goToPage(1);
     },
     goToPage(page) {
+      const { query } = this.$route;
       this.$store.commit("setCurrentPage", page);
+      this.$router.push({ query: { ...query, page } });
     },
   },
   async asyncData({ store }) {
