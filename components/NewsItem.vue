@@ -8,7 +8,7 @@
     </p>
     <a :href="news.link">Подробнее</a>
     <div class="new__info">
-      <span>www.mos.ru</span>
+      <span>{{ news.source }}</span>
       <span>{{ formattedDate(news.pubDate) }}</span>
     </div>
   </li>

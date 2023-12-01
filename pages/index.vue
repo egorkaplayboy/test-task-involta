@@ -2,9 +2,18 @@
   <main>
     <div class="filters">
       <div class="filters__left">
-        <p>Все</p>
-        <p>Lenta.ru</p>
-        <p>Mos.ru</p>
+        <p :class="{ active: selectedFilter === 'all' }" @click="showAllNews">
+          Все
+        </p>
+        <p
+          :class="{ active: selectedFilter === 'lenta' }"
+          @click="showLentaNews"
+        >
+          Lenta.ru
+        </p>
+        <p :class="{ active: selectedFilter === 'mos' }" @click="showMosNews">
+          Mos.ru
+        </p>
       </div>
       <div class="filters__right">
         <img src="/grid.png" alt="grid" />
@@ -13,7 +22,7 @@
     </div>
     <div class="news">
       <ul>
-        <NewsItem v-for="item in allNews" :key="item.id" :news="item" />
+        <NewsItem v-for="item in news" :key="item.id" :news="item" />
       </ul>
     </div>
   </main>
@@ -27,10 +36,25 @@ export default {
   name: "IndexPage",
   components: { NewsItem },
   computed: {
-    ...mapState(["allNews"]),
+    ...mapState(["news", "selectedFilter"]),
   },
   methods: {
     ...mapActions(["fetchMosNews", "fetchLentaNews", "fetchAllNews"]),
+    async showAllNews() {
+      this.$store.commit("setSelectedFilter", "all");
+      this.$router.push({ query: { source: "all" } });
+      await this.fetchAllNews();
+    },
+    async showLentaNews() {
+      this.$store.commit("setSelectedFilter", "lenta");
+      this.$router.push({ query: { source: "lenta" } });
+      await this.fetchLentaNews();
+    },
+    async showMosNews() {
+      this.$store.commit("setSelectedFilter", "mos");
+      this.$router.push({ query: { source: "mos" } });
+      await this.fetchMosNews();
+    },
   },
   async asyncData({ store }) {
     await store.dispatch("fetchAllNews");
@@ -54,6 +78,9 @@ main {
   color: #0029ff;
   font-weight: 700;
   font-size: 14px;
+}
+.filters__left p.active {
+  color: #000000;
 }
 .filters__left p:hover {
   color: #000000;

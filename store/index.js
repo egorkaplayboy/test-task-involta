@@ -1,20 +1,16 @@
 import { DOMParser } from "xmldom";
 
 export const state = () => ({
-  mosNews: [],
-  lentaNews: [],
-  allNews: [],
+  news: [],
+  selectedFilter: "all"
 });
 export const mutations = {
-  SET_MOS_NEWS(state, news) {
-    state.mosNews = news;
+  setNews(state, news) {
+    state.news = news;
   },
-  SET_LENTA_NEWS(state, news) {
-    state.lentaNews = news;
-  },
-  SET_ALL_NEWS(state) {
-    state.allNews = [...state.mosNews, ...state.lentaNews];
-  },
+  setSelectedFilter(state, filter) {
+    state.selectedFilter = filter
+  }
 };
 export const getters = {
   formattedDate: (state) => (date) => {
@@ -25,18 +21,20 @@ export const getters = {
 export const actions = {
   async fetchMosNews({ commit }) {
     const mosNews = await fetchNewsData("http://localhost:3000/api/mos-rss");
-    commit("SET_MOS_NEWS", mosNews);
+    commit("setNews", mosNews);
+    return mosNews;
   },
   async fetchLentaNews({ commit }) {
     const lentaNews = await fetchNewsData(
       "http://localhost:3000/api/lenta-rss"
     );
-    commit("SET_LENTA_NEWS", lentaNews);
+    commit("setNews", lentaNews);
+    return lentaNews;
   },
   async fetchAllNews({ dispatch, commit }) {
-    await dispatch("fetchMosNews");
-    await dispatch("fetchLentaNews");
-    commit("SET_ALL_NEWS");
+    const mosNews = await dispatch("fetchMosNews");
+    const lentaNews = await dispatch("fetchLentaNews");
+    commit("setNews", [...mosNews, ...lentaNews]);
   },
 };
 
@@ -46,6 +44,8 @@ async function fetchNewsData(url) {
     const xmlData = await response.text();
     const parser = new DOMParser();
     const xml = parser.parseFromString(xmlData, "text/xml");
+    const channel = xml.getElementsByTagName("channel")[0];
+    const channelLink = channel.getElementsByTagName("link")[0].textContent;
     const items = xml.getElementsByTagName("item");
     const parsedItems = Array.from(items).map((item, index) => {
       const title = item.getElementsByTagName("title")[0];
@@ -60,6 +60,7 @@ async function fetchNewsData(url) {
         description: description ? description.textContent : "",
         pubDate: pubDate ? pubDate.textContent : "",
         imgUrl: enclosure ? enclosure.getAttribute("url") : "",
+        source: channelLink
       };
     });
     return parsedItems;
