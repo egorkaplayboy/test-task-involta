@@ -26,18 +26,22 @@
     </div>
     <div class="news">
       <ul :class="selectedView">
-        <NewsItem v-for="item in filteredNews" :key="item.id" :news="item" />
+        <NewsItem
+          v-for="item in slicedFilteredNews"
+          :key="item.id"
+          :news="item"
+        />
       </ul>
     </div>
     <div class="paginate">
-      <p
+      <button
         v-for="page in displayPages"
         :key="page"
         @click="goToPage(page)"
         :class="{ active: currentPage === page }"
       >
         {{ page }}
-      </p>
+      </button>
     </div>
   </main>
 </template>
@@ -50,8 +54,13 @@ export default {
   name: "IndexPage",
   components: { NewsItem },
   computed: {
-    ...mapState(["news", "selectedFilter", "currentPage", "selectedView"]),
+    ...mapState(["news", "selectedFilter", "currentPage", "selectedView", "pageSize"]),
     ...mapGetters(["totalPages", "filteredNews", "displayPages"]),
+    slicedFilteredNews() {
+      const startIndex = (this.currentPage - 1) * this.pageSize;
+      const endIndex = startIndex + this.pageSize;
+      return this.filteredNews.slice(startIndex, endIndex);
+    },
   },
   methods: {
     ...mapActions(["fetchMosNews", "fetchLentaNews", "fetchAllNews"]),
@@ -89,6 +98,7 @@ export default {
   mounted() {
     const view = localStorage.getItem("selectedView");
     this.$store.commit("setSelectedView", view);
+    this.$router.push({ query: { page: 1, source: "all" } });
   },
   async asyncData({ store }) {
     await store.dispatch("fetchAllNews");
@@ -145,14 +155,17 @@ main {
   justify-content: center;
   margin-bottom: 15px;
 }
-.paginate p {
+.paginate button {
   font-weight: 700;
   font-size: 18px;
   color: #000000;
   cursor: pointer;
   margin: 0 10px;
+  outline: none;
+  border: none;
+  background-color: inherit;
 }
-.paginate p.active {
+.paginate button.active {
   color: #0029ff;
 }
 </style>

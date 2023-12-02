@@ -5,7 +5,8 @@ export const state = () => ({
   selectedFilter: "all",
   currentPage: 1,
   pageSize: 4,
-  selectedView: "grid"
+  selectedView: "grid",
+  searchValue: "",
 });
 export const mutations = {
   setNews(state, news) {
@@ -18,28 +19,32 @@ export const mutations = {
     state.currentPage = page;
   },
   setSelectedView(state, view) {
-    state.selectedView = view
-  }
+    state.selectedView = view;
+  },
+  setSearchValue(state, value) {
+    state.searchValue = value;
+  },
 };
 export const getters = {
   formattedDate: (state) => (date) => {
     const options = { day: "2-digit", month: "2-digit", year: "numeric" };
     return new Date(date).toLocaleDateString("ru-RU", options);
   },
-  totalPages: (state) => {
-    const { news, pageSize } = state;
-    return Math.ceil(news.length / pageSize);
-  },
   filteredNews: (state) => {
-    const { currentPage, pageSize, news } = state;
-    const startIndex = (currentPage - 1) * pageSize;
-    const endIndex = startIndex + pageSize;
-    return news.slice(startIndex, endIndex);
+    const { news, searchValue } = state;
+    return news.filter((item) =>
+      item.title.toLowerCase().includes(searchValue.toLowerCase())
+    );
+  },
+  totalPages: (state, getters) => {
+    const { pageSize } = state;
+    const { filteredNews } = getters;
+    return Math.ceil(filteredNews.length / pageSize);
   },
   displayPages: (state, getters) => {
     const totalPages = getters.totalPages;
     const currentPage = state.currentPage;
-    const displayRange = 2;
+    const displayRange = 1;
     const firstPage = 1;
     const lastPage = totalPages;
     let pages = [];

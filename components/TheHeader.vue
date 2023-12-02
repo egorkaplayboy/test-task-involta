@@ -5,12 +5,26 @@
       <img src="/refresh.png" alt="Refresh" />
     </div>
     <div class="header__right">
-      <input type="text" />
+      <input type="text" :value="searchValue" @input="updateSearchValue($event.target.value)" />
       <img src="/find.png" alt="Find" class="icon" />
     </div>
   </header>
 </template>
+<script>
+import { mapState, mapMutations } from "vuex";
 
+export default {
+  computed: {
+    ...mapState(["searchValue"]),
+  },
+  methods: {
+    ...mapMutations(["setSearchValue"]),
+    updateSearchValue(newValue) {
+      this.setSearchValue(newValue);
+    },
+  },
+};
+</script>
 <style scoped>
 .header {
   display: flex;
