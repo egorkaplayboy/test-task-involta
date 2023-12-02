@@ -16,12 +16,16 @@
         </p>
       </div>
       <div class="filters__right">
-        <img src="/grid.png" alt="grid" />
-        <img src="/horizotal.png" alt="horizontal" />
+        <img src="/grid.png" alt="grid" @click="setGridView('grid')" />
+        <img
+          src="/horizotal.png"
+          alt="horizontal"
+          @click="setGridView('horizontal')"
+        />
       </div>
     </div>
     <div class="news">
-      <ul>
+      <ul :class="selectedView">
         <NewsItem v-for="item in filteredNews" :key="item.id" :news="item" />
       </ul>
     </div>
@@ -46,7 +50,7 @@ export default {
   name: "IndexPage",
   components: { NewsItem },
   computed: {
-    ...mapState(["news", "selectedFilter", "currentPage"]),
+    ...mapState(["news", "selectedFilter", "currentPage", "selectedView"]),
     ...mapGetters(["totalPages", "filteredNews", "displayPages"]),
   },
   methods: {
@@ -77,6 +81,14 @@ export default {
       this.$store.commit("setCurrentPage", page);
       this.$router.push({ query: { ...query, page } });
     },
+    setGridView(view) {
+      this.$store.commit("setSelectedView", view);
+      localStorage.setItem("selectedView", view);
+    },
+  },
+  mounted() {
+    const view = localStorage.getItem("selectedView");
+    this.$store.commit("setSelectedView", view);
   },
   async asyncData({ store }) {
     await store.dispatch("fetchAllNews");
@@ -114,16 +126,24 @@ main {
 .news {
   margin-top: 15px;
 }
-.news ul {
+
+.grid {
   list-style: none;
   display: grid;
   grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.horizontal {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr;
   gap: 20px;
 }
 .paginate {
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-bottom: 15px;
 }
 .paginate p {
   font-weight: 700;

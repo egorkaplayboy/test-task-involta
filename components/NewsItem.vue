@@ -1,12 +1,17 @@
 <template>
   <li class="new">
-    <h3>
-      {{ news.title }}
-    </h3>
-    <p>
-      {{ news.description }}
-    </p>
-    <a :href="news.link">Подробнее</a>
+    <div v-if="selectedView === 'horizontal'" class="new__block">
+      <img :src="news.imgUrl" alt="Photo" />
+    </div>
+    <div class="new__block">
+      <h3>
+        {{ news.title }}
+      </h3>
+      <p>
+        {{ news.description }}
+      </p>
+      <a :href="news.link">Подробнее</a>
+    </div>
     <div class="new__info">
       <span>{{ news.source }}</span>
       <span>{{ formattedDate(news.pubDate) }}</span>
@@ -14,7 +19,7 @@
   </li>
 </template>
 <script>
-import { mapGetters } from "vuex";
+import { mapGetters, mapState } from "vuex";
 
 export default {
   props: {
@@ -25,6 +30,7 @@ export default {
   },
   computed: {
     ...mapGetters(["formattedDate"]),
+    ...mapState(["selectedView"]),
   },
 };
 </script>
@@ -37,13 +43,23 @@ export default {
   border-radius: 3px;
   padding: 30px;
   display: flex;
-  flex-direction: column;
   justify-content: space-between;
+  flex-direction: column;
+}
+.new__block {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
 }
 .new__info {
   display: flex;
   align-items: center;
   justify-content: space-between;
+}
+img {
+  height: 100px;
+  width: 200px;
+  object-fit: cover;
 }
 h3 {
   color: #0029ff;

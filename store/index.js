@@ -5,6 +5,7 @@ export const state = () => ({
   selectedFilter: "all",
   currentPage: 1,
   pageSize: 4,
+  selectedView: "grid"
 });
 export const mutations = {
   setNews(state, news) {
@@ -16,6 +17,9 @@ export const mutations = {
   setCurrentPage(state, page) {
     state.currentPage = page;
   },
+  setSelectedView(state, view) {
+    state.selectedView = view
+  }
 };
 export const getters = {
   formattedDate: (state) => (date) => {
@@ -50,7 +54,6 @@ export const getters = {
       }
     }
     pages.push(lastPage);
-
     return pages;
   },
 };
