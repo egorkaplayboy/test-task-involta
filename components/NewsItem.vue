@@ -1,5 +1,5 @@
 <template>
-  <li class="new">
+  <div class="new">
     <div v-if="selectedView === 'horizontal'" class="new__block">
       <img :src="news.imgUrl" alt="Photo" />
     </div>
@@ -16,7 +16,7 @@
       <span>{{ news.source }}</span>
       <span>{{ formattedDate(news.pubDate) }}</span>
     </div>
-  </li>
+  </div>
 </template>
 <script>
 import { mapGetters, mapState } from "vuex";

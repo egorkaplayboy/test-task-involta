@@ -25,13 +25,13 @@
       </div>
     </div>
     <div class="news">
-      <ul :class="selectedView">
+      <div :class="selectedView">
         <NewsItem
           v-for="item in slicedFilteredNews"
           :key="item.id"
           :news="item"
         />
-      </ul>
+      </div>
     </div>
     <div class="paginate">
       <button
@@ -54,7 +54,13 @@ export default {
   name: "IndexPage",
   components: { NewsItem },
   computed: {
-    ...mapState(["news", "selectedFilter", "currentPage", "selectedView", "pageSize"]),
+    ...mapState([
+      "news",
+      "selectedFilter",
+      "currentPage",
+      "selectedView",
+      "pageSize",
+    ]),
     ...mapGetters(["totalPages", "filteredNews", "displayPages"]),
     slicedFilteredNews() {
       const startIndex = (this.currentPage - 1) * this.pageSize;
@@ -141,7 +147,7 @@ main {
   list-style: none;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 20px;
+  grid-gap: 20px;
 }
 .horizontal {
   list-style: none;
@@ -153,7 +159,7 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 15px;
+  margin: 20px 0;
 }
 .paginate button {
   font-weight: 700;
@@ -167,5 +173,11 @@ main {
 }
 .paginate button.active {
   color: #0029ff;
+}
+@media (max-width: 570px) {
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
 }
 </style>

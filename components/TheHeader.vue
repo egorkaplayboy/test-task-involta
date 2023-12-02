@@ -2,25 +2,39 @@
   <header class="header">
     <div class="header__left">
       <h2>Список новостей</h2>
-      <img src="/refresh.png" alt="Refresh" />
+      <img src="/refresh.png" alt="Refresh" @click="refreshNews" />
     </div>
     <div class="header__right">
-      <input type="text" :value="searchValue" @input="updateSearchValue($event.target.value)" />
+      <input
+        type="text"
+        :value="searchValue"
+        @input="updateSearchValue($event.target.value)"
+      />
       <img src="/find.png" alt="Find" class="icon" />
     </div>
   </header>
 </template>
 <script>
-import { mapState, mapMutations } from "vuex";
+import { mapState, mapMutations, mapActions } from "vuex";
 
 export default {
   computed: {
     ...mapState(["searchValue"]),
   },
   methods: {
-    ...mapMutations(["setSearchValue"]),
+    ...mapMutations(["setSearchValue", "setCurrentPage", "setSelectedFilter"]),
+    ...mapActions(["fetchAllNews"]),
     updateSearchValue(newValue) {
+      this.setCurrentPage(1);
       this.setSearchValue(newValue);
+      const { query } = this.$route;
+      this.$router.push({ query: { ...query, search: newValue } });
+    },
+    refreshNews() {
+      this.setSelectedFilter("all");
+      this.setCurrentPage(1);
+      this.setSearchValue("");
+      this.fetchAllNews();
     },
   },
 };
@@ -31,6 +45,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid #e5e5e5;
+  margin: 10px;
 }
 .header__left {
   display: flex;
@@ -69,5 +84,13 @@ export default {
   width: 20px;
   height: 20px;
   cursor: pointer;
+}
+@media (max-width: 720px) {
+  .header {
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
+    justify-content: space-between;
+  }
 }
 </style>
