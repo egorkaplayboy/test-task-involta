@@ -118,7 +118,7 @@ async function fetchNewsData(url) {
         id: index,
         title: title ? title.textContent : "",
         link: link ? link.textContent : "",
-        description: description ? description.textContent : "",
+        description: description ? description.textContent.split(".")[0] : "",
         pubDate: pubDate ? pubDate.textContent : "",
         imgUrl: enclosure ? enclosure.getAttribute("url") : "",
         source: channelLink,

@@ -126,5 +126,17 @@ span {
     padding: 10px;
     margin: 10px;
   }
+  .horizontalNew {
+    height: auto;
+  }
+  .horizontalNew__flex {
+    display: flex;
+    flex-direction: column;
+  }
+  img {
+    height: auto;
+    width: auto;
+    object-fit: cover;
+  }
 }
 </style>
