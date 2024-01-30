@@ -1,20 +1,36 @@
 <template>
-  <div class="new">
-    <div v-if="selectedView === 'horizontal'" class="new__block">
-      <img :src="news.imgUrl" alt="Photo" />
+  <div>
+    <div class="gridNew" v-if="selectedView === 'grid'">
+      <div class="gridNew__block">
+        <h3>
+          {{ news.title }}
+        </h3>
+        <p>
+          {{ news.description }}
+        </p>
+        <a :href="news.link">Подробнее</a>
+      </div>
+      <div class="gridNew__info">
+        <span>{{ news.source }}</span>
+        <span>{{ formattedDate(news.pubDate) }}</span>
+      </div>
     </div>
-    <div class="new__block">
-      <h3>
-        {{ news.title }}
-      </h3>
-      <p>
-        {{ news.description }}
-      </p>
-      <a :href="news.link">Подробнее</a>
-    </div>
-    <div class="new__info">
-      <span>{{ news.source }}</span>
-      <span>{{ formattedDate(news.pubDate) }}</span>
+    <div class="horizontalNew" v-else>
+      <div class="horizontalNew__flex">
+        <div class="horizontalNew__block">
+          <img :src="news.imgUrl" alt="Photo" />
+        </div>
+        <div class="horizontalNew__block">
+          <h3>{{ news.title }}</h3>
+          <p>
+            {{ news.description }}
+          </p>
+        </div>
+      </div>
+      <div class="horizontalNew__info">
+        <span>{{ news.source }}</span>
+        <span>{{ formattedDate(news.pubDate) }}</span>
+      </div>
     </div>
   </div>
 </template>
@@ -35,7 +51,7 @@ export default {
 };
 </script>
 <style scoped>
-.new {
+.gridNew {
   height: 256px;
   box-shadow: 0px 1px 4px 0px #0000000d;
   box-shadow: 0px 2px 4px 0px #0000000d;
@@ -46,14 +62,36 @@ export default {
   justify-content: space-between;
   flex-direction: column;
 }
-.new__block {
+.gridNew__block {
   display: flex;
   justify-content: space-between;
   flex-direction: column;
 }
-.new__info {
+.gridNew__info {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+}
+.horizontalNew {
+  height: 190px;
+  box-shadow: 0px 1px 4px 0px #0000000d;
+  box-shadow: 0px 2px 4px 0px #0000000d;
+  background-color: #fff;
+  border-radius: 3px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.horizontalNew__flex {
+  display: flex;
+  align-items: center;
+}
+.horizontalNew__block:last-child {
+  margin-left: 15px;
+}
+.horizontalNew__info {
+  display: flex;
   justify-content: space-between;
 }
 img {
@@ -81,5 +119,12 @@ span {
   font-size: 14px;
   color: #dcdcdc;
   text-decoration: underline;
+}
+@media (max-width: 700px) {
+  .horizontalNew,
+  .gridNew {
+    padding: 10px;
+    margin: 10px;
+  }
 }
 </style>
