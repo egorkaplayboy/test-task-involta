@@ -64,21 +64,38 @@ export const getters = {
 };
 export const actions = {
   async fetchMosNews({ commit }) {
-    const mosNews = await fetchNewsData("http://localhost:3000/api/mos-rss");
-    commit("setNews", mosNews);
-    return mosNews;
+    try {
+      const mosNews = await fetchNewsData("http://localhost:3000/api/mos-rss");
+      commit("setNews", mosNews);
+      return mosNews;
+    } catch (error) {
+      console.error("Error fetching Moscow news:", error);
+      commit("setNews", []);
+      return [];
+    }
   },
   async fetchLentaNews({ commit }) {
-    const lentaNews = await fetchNewsData(
-      "http://localhost:3000/api/lenta-rss"
-    );
-    commit("setNews", lentaNews);
-    return lentaNews;
+    try {
+      const lentaNews = await fetchNewsData(
+        "http://localhost:3000/api/lenta-rss"
+      );
+      commit("setNews", lentaNews);
+      return lentaNews;
+    } catch (error) {
+      console.error("Error fetching Lenta news:", error);
+      commit("setNews", []);
+      return [];
+    }
   },
   async fetchAllNews({ dispatch, commit }) {
-    const mosNews = await dispatch("fetchMosNews");
-    const lentaNews = await dispatch("fetchLentaNews");
-    commit("setNews", [...mosNews, ...lentaNews]);
+    try {
+      const mosNews = await dispatch("fetchMosNews");
+      const lentaNews = await dispatch("fetchLentaNews");
+      commit("setNews", [...lentaNews, ...mosNews]);
+    } catch (error) {
+      console.error("Error fetching all news:", error);
+      commit("setNews", []);
+    }
   },
 };
 
