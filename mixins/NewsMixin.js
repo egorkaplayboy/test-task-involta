@@ -8,6 +8,7 @@ export const NewsMixin = {
       "currentPage",
       "selectedView",
       "pageSize",
+      "searchValue",
     ]),
     ...mapGetters(["totalPages", "filteredNews", "displayPages"]),
     slicedFilteredNews() {
@@ -53,7 +54,11 @@ export const NewsMixin = {
     const view = localStorage.getItem("selectedView");
     this.$store.commit("setSelectedView", view);
     this.$router.push({
-      query: { source: this.selectedFilter, page: this.currentPage },
+      query: {
+        source: this.selectedFilter,
+        page: this.currentPage,
+        search: this.searchValue,
+      },
     });
   },
   async asyncData({ store }) {

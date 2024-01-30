@@ -35,6 +35,7 @@ export default {
       this.setCurrentPage(1);
       this.setSearchValue("");
       this.fetchAllNews();
+      this.$router.push({ query: { source: "all", page: 1, search: "" } });
     },
   },
 };
