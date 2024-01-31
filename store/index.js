@@ -7,6 +7,7 @@ export const state = () => ({
   pageSize: 4,
   selectedView: "grid",
   searchValue: "",
+  newsCache: {},
 });
 export const mutations = {
   setNews(state, news) {
@@ -23,6 +24,9 @@ export const mutations = {
   },
   setSearchValue(state, value) {
     state.searchValue = value;
+  },
+  setNewsCache(state, { filter, news }) {
+    state.newsCache[filter] = news;
   },
 };
 export const getters = {
@@ -63,28 +67,42 @@ export const getters = {
   },
 };
 export const actions = {
-  async fetchMosNews({ commit }) {
-    try {
-      const mosNews = await fetchNewsData("http://localhost:3000/api/mos-rss");
-      commit("setNews", mosNews);
-      return mosNews;
-    } catch (error) {
-      console.error("Error fetching Moscow news:", error);
-      commit("setNews", []);
-      return [];
+  async fetchMosNews({ commit, state }) {
+    if (!state.newsCache["mos"]) {
+      try {
+        const mosNews = await fetchNewsData(
+          "http://localhost:3000/api/mos-rss"
+        );
+        commit("setNewsCache", { filter: "mos", news: mosNews });
+        commit("setNews", mosNews);
+        return mosNews;
+      } catch (error) {
+        console.error("Error fetching Moscow news:", error);
+        commit("setNews", []);
+        return [];
+      }
+    } else {
+      commit("setNews", state.newsCache["mos"]);
+      return state.newsCache["mos"];
     }
   },
-  async fetchLentaNews({ commit }) {
-    try {
-      const lentaNews = await fetchNewsData(
-        "http://localhost:3000/api/lenta-rss"
-      );
-      commit("setNews", lentaNews);
-      return lentaNews;
-    } catch (error) {
-      console.error("Error fetching Lenta news:", error);
-      commit("setNews", []);
-      return [];
+  async fetchLentaNews({ commit, state }) {
+    if (!state.newsCache["lenta"]) {
+      try {
+        const lentaNews = await fetchNewsData(
+          "http://localhost:3000/api/lenta-rss"
+        );
+        commit("setNewsCache", { filter: "lenta", news: lentaNews });
+        commit("setNews", lentaNews);
+        return lentaNews;
+      } catch (error) {
+        console.error("Error fetching Lenta news:", error);
+        commit("setNews", []);
+        return [];
+      }
+    } else {
+      commit("setNews", state.newsCache["lenta"]);
+      return state.newsCache["lenta"];
     }
   },
   async fetchAllNews({ dispatch, commit }) {
