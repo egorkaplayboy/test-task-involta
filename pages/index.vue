@@ -16,12 +16,72 @@
         </p>
       </div>
       <div class="filters__right">
-        <img src="/grid.png" alt="grid" @click="setGridView('grid')" />
-        <img
-          src="/horizotal.png"
-          alt="horizontal"
+        <svg
+          @click="setGridView('grid')"
+          width="18"
+          height="18"
+          viewBox="0 0 18 18"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <rect
+            v-if="selectedView === 'grid'"
+            width="8"
+            height="8"
+            fill="#0029FF"
+          />
+          <rect v-else width="8" height="8" fill="#C4C4C4" />
+          <rect
+            v-if="selectedView === 'grid'"
+            y="10"
+            width="8"
+            height="8"
+            fill="#0029FF"
+          />
+          <rect v-else y="10" width="8" height="8" fill="#C4C4C4" />
+          <rect
+            v-if="selectedView === 'grid'"
+            x="10"
+            width="8"
+            height="8"
+            fill="#0029FF"
+          />
+          <rect v-else x="10" width="8" height="8" fill="#C4C4C4" />
+          <rect
+            v-if="selectedView === 'grid'"
+            x="10"
+            y="10"
+            width="8"
+            height="8"
+            fill="#0029FF"
+          />
+          <rect v-else x="10" y="10" width="8" height="8" fill="#C4C4C4" />
+        </svg>
+
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 18 18"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
           @click="setGridView('horizontal')"
-        />
+        >
+          <rect
+            v-if="selectedView === 'horizontal'"
+            width="18"
+            height="8"
+            fill="#0029FF"
+          />
+          <rect v-else width="18" height="8" fill="#C4C4C4" />
+          <rect
+            v-if="selectedView === 'horizontal'"
+            y="10"
+            width="18"
+            height="8"
+            fill="#0029FF"
+          />
+          <rect v-else y="10" width="18" height="8" fill="#C4C4C4" />
+        </svg>
       </div>
     </div>
     <div class="news">
@@ -80,7 +140,7 @@ main {
 .filters__left p:hover {
   color: #000000;
 }
-.filters__right img {
+.filters__right svg {
   cursor: pointer;
   margin: 0 5px;
 }
