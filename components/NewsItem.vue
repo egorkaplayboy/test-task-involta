@@ -139,4 +139,9 @@ span {
     object-fit: cover;
   }
 }
+@media (max-width: 570px) {
+  .gridNew {
+    height: auto;
+  }
+}
 </style>
